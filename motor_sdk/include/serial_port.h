@@ -1,0 +1,93 @@
+#ifndef SERIAL_PORT_H
+#define SERIAL_PORT_H
+
+#include <termios.h>
+#include <sys/select.h>
+
+#include <string>
+#include <string.h>
+#include <stdint.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/serial.h>
+#include <unistd.h>
+#include <iostream>
+
+#include "error_class.h"
+#include "IOPort.h"
+
+enum class bytesize_t{
+    fivebits,
+    sixbits,
+    sevenbits,
+    eightbits
+};
+
+enum class parity_t{
+    parity_none,
+    parity_odd,
+    parity_even,
+    parity_mark,
+    parity_space
+};
+
+enum class stopbits_t{
+    stopbits_one,
+    stopbits_two,
+    stopbits_one_point_five
+};
+
+enum class flowcontrol_t{
+    flowcontrol_none,
+    flowcontrol_software,
+    flowcontrol_hardware
+};
+
+
+
+class SerialPort : public IOPort{
+public:
+    SerialPort(const std::string &portName,
+            size_t recvLength = 78,
+            uint32_t baudrate = 2000000,
+            size_t timeOutUs = 1000,
+            BlockYN blockYN = BlockYN::NO,
+            bytesize_t bytesize = bytesize_t::eightbits,
+            parity_t parity = parity_t::parity_none,
+            stopbits_t stopbits = stopbits_t::stopbits_one,
+            flowcontrol_t flowcontrol = flowcontrol_t::flowcontrol_none);
+    virtual ~SerialPort();
+    void resetSerial(size_t recvLength = 78,
+                     uint32_t baudrate = 2000000,
+                     size_t timeOutUs = 1000,
+                     BlockYN blockYN = BlockYN::NO,
+                     bytesize_t bytesize = bytesize_t::eightbits,
+                     parity_t parity = parity_t::parity_none,
+                     stopbits_t stopbits = stopbits_t::stopbits_one,
+                     flowcontrol_t flowcontrol = flowcontrol_t::flowcontrol_none);
+    size_t Send(uint8_t *sendMsg, size_t sendLength);
+    size_t Recv(uint8_t *recvMsg, size_t recvLength);
+    size_t Recv(uint8_t *recvMsg);
+    bool SendRecv(uint8_t *sendMsg, uint8_t *recvMsg, size_t sendLength);
+
+private:
+    void _open();
+    void _set();
+    void _close();
+    size_t _nonBlockRecv(uint8_t *recvMsg, size_t readLen);
+    std::string _portName;
+    uint32_t _baudrate;
+    bytesize_t _bytesize;
+    parity_t _parity;
+    stopbits_t _stopbits;
+    flowcontrol_t _flowcontrol;
+    bool _xonxoff;
+    bool _rtscts;
+
+    int _fd;
+    fd_set _rSet;
+
+};
+
+
+#endif  // SERIALPORT_H
