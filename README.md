@@ -18,70 +18,11 @@
   </a>
 </p>
 
-This repository contains the joint motor SDK and secondary development example programs for the **Dobot Hexplorer hexapod robot**. It includes three high-level control examples, two joint-level control examples and the demo programs of lidar and realsense camera.
+This repository contains the joint motor SDK and joint-level control examples for the **Dobot Hexplorer hexapod robot**.
 
 Supported model: **miniHex_v2**
 
-**Preparation**:
-
-```bash
-source /opt/ros/humble/setup.bash
-source ~/robot_controller_release/ros2_packages/setup.bash
-```
-
-## High-Level Control Examples
-
-Enter high level directory and compile:
-
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
-
-Run the program:
-
-```bash
-./<executable file>
-```
-
-If you want to run the Python examples, go to the `py` directory and execute:
-
-```bash
-python3 <example file>.py
-```
-
-Normally, you should see the following cases (from left to right):
-
-- Body twist demo
-- Locomotion demo
-- Robot state console output
-- Robot state real test
-
-<div align="center">
-<table>
-  <tr>
-    <td align="center">
-      <img src="assets/body_twist.gif" alt="body_twist" width="360" ><br>
-      <b>body_twist</b>
-    </td>
-    <td align="center">
-      <img src="assets/locomotion.gif" alt="locomotion" width="360"><br>
-      <b>locomotion</b>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="assets/robot_state_console.gif" alt="robot_state_console" width="360" ><br>
-      <b>robot_state console output</b>
-    </td>
-    <td align="center">
-      <img src="assets/robot_state_real.gif" alt="robot_state_real" width="360" ><br>
-      <b>robot_state real test</b>
-    </td>
-  </tr>
-</table>
-</div>
+📖 **Secondary development documentation** — high-level control topics, LiDAR, depth camera, motor interface and system upgrade — see [wiki.md](./wiki.md).
 
 ## Joint Control Examples
 
@@ -120,67 +61,3 @@ cd build
   <img src="assets/motor_wave.gif" alt="motor_wave" width="420"><br>
   <b>motor_wave</b>
 </div>
-
-## Livox LiDAR
-
-First, you need to start the LiDAR node. Please make sure to run the command on **intel-minipc** instead of jetson-nano:
-
-```bash
-sudo chmod +x ros2_setup.bash
-./ros2_setup.bash
-ros2 launch livox_lidar_node start_node.launch.py
-```
-
-You can verify whether the node has started successfully with `ros2 topic list`.
-
-**Build**
-
-```bash
-cd livox
-mkdir build && cd build
-cmake ..
-make
-```
-
-**Run**
-
-```bash
-<executable file>  # C++ method, or
-python3 ./py/<script file>  # Python method
-```
-
-If the program runs correctly, you should see console output showing the point cloud frame rate (10 Hz), number of points, and related IMU information.
-
----
-
-## Realsense Camera
-
-First, you need to start the depth camera node. Please make sure to run the command on **jetson-nano** instead of intel-minipc:
-
-```bash
-ssh robot@192.168.1.20  # password: 123
-cd Hexplorer_sdk_examples
-sudo chmod +x ros2_setup.bash
-./ros2_setup.bash
-ros2 launch realsense_camera_node start_node.launch.py
-```
-
-You can verify whether the node has started successfully with `ros2 topic list`.
-
-**Build**
-
-```bash
-cd realsense
-mkdir build && cd build
-cmake ..
-make
-```
-
-**Run**
-
-```bash
-<executable file>  # C++ method, or
-python3 ./py/<script file>  # Python method
-```
-
-If the program runs correctly, you should see console output showing the camera frame rate (30 Hz), resolution, and other information.
